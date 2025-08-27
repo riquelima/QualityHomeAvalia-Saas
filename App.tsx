@@ -116,6 +116,8 @@ const App: React.FC = () => {
         setSelectedReport(report);
     }
 
+    const handleNavigateHome = () => setCurrentPage('home');
+
     return (
         <div className="min-h-screen bg-white text-primary-text flex flex-col">
             <Header 
@@ -123,6 +125,7 @@ const App: React.FC = () => {
                 onLoginClick={() => setShowAuthModal(true)}
                 onLogoutClick={handleLogout}
                 onReportsClick={() => setCurrentPage('reports')}
+                onNavigateHome={handleNavigateHome}
             />
             <main className="flex-grow">
                 {currentPage === 'home' ? (

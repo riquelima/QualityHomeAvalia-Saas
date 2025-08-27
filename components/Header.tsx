@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import type { User } from '../types';
 import { Icon } from './Icon';
@@ -8,9 +9,10 @@ interface HeaderProps {
     onLoginClick: () => void;
     onLogoutClick: () => void;
     onReportsClick: () => void;
+    onNavigateHome: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ user, onLoginClick, onLogoutClick, onReportsClick }) => {
+export const Header: React.FC<HeaderProps> = ({ user, onLoginClick, onLogoutClick, onReportsClick, onNavigateHome }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -33,17 +35,17 @@ export const Header: React.FC<HeaderProps> = ({ user, onLoginClick, onLogoutClic
             <div className="container mx-auto px-6">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex-shrink-0">
-                        <a href="/" className="flex items-center">
+                        <button onClick={onNavigateHome} className="flex items-center">
                             <img 
                                 src="https://raw.githubusercontent.com/riquelima/avaliao-imvel-quality-home/main/logoTransparente2.png" 
                                 alt="Quality Home Avalia Logo" 
                                 className="h-8 w-auto" 
                             />
-                        </a>
+                        </button>
                     </div>
                     <nav className="hidden md:flex items-center space-x-8">
-                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">CONSULTAS</a>
-                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">PREÇOS</a>
+                        <button onClick={onNavigateHome} className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">CONSULTAS</button>
+                        <button onClick={onNavigateHome} className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">PREÇOS</button>
                          {user ? (
                             <div className="relative" ref={dropdownRef}>
                                 <button onClick={toggleDropdown} className="flex items-center space-x-2">
