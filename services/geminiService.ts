@@ -1,11 +1,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ValuationFormData, ValuationResult } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+// NOTE: The API key has been added directly to resolve deployment issues on Vercel.
+// For production applications, it's highly recommended to use a backend proxy 
+// or serverless functions to keep API keys secure and not expose them on the client-side.
+const API_KEY = "AIzaSyCsX9l10XCu3TtSCU1BSx-qOYrwUKYw2xk";
+
+if (!API_KEY) {
+    throw new Error("Google AI API Key is not set.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const valuationSchema = {
     type: Type.OBJECT,
