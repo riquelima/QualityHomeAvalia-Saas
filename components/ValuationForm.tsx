@@ -19,12 +19,31 @@ type FormData = Omit<ValuationFormData, "area" | "bedrooms" | "suites" | "bathro
     suites: string;
     bathrooms: string;
     parkingSpaces: string;
+    features: string[];
 };
 
 const formSteps = [
     { id: 1, title: 'Insira a localização' },
     { id: 2, title: 'Tipo de imóvel' },
     { id: 3, title: 'Preencha suas características' },
+];
+
+const availableFeatures = [
+    'Piscina',
+    'Churrasqueira',
+    'Salão de Festas',
+    'Academia',
+    'Portaria 24h',
+    'Área de Serviço',
+    'Mobiliado',
+    'Varanda Gourmet',
+    'Quadra Esportiva',
+    'Playground',
+    'Sauna',
+    'Escritório',
+    'Condomínio Fechado',
+    'Energia Solar',
+    'Ar Condicionado'
 ];
 
 const PropertyTypeCard: React.FC<{ icon: keyof typeof ICONS; label: string; selected: boolean; onClick: () => void; }> = ({ icon, label, selected, onClick }) => (
@@ -49,6 +68,7 @@ export const ValuationForm: React.FC<ValuationFormProps> = ({ onEvaluate, isLoad
         bathrooms: '',
         parkingSpaces: '',
         conservationState: 'bom',
+        features: [],
     });
     const [selectedState, setSelectedState] = useState('');
     const [cities, setCities] = useState<string[]>([]);
@@ -183,6 +203,15 @@ export const ValuationForm: React.FC<ValuationFormProps> = ({ onEvaluate, isLoad
             });
         }
     };
+    
+    const handleFeatureToggle = (feature: string) => {
+        setFormData(prev => {
+            const features = prev.features.includes(feature)
+                ? prev.features.filter(f => f !== feature)
+                : [...prev.features, feature];
+            return { ...prev, features };
+        });
+    };
 
     const validateStep = () => {
         const newErrors: Record<string, string> = {};
@@ -280,7 +309,7 @@ export const ValuationForm: React.FC<ValuationFormProps> = ({ onEvaluate, isLoad
                         <button type="button" onClick={handleLocate} disabled={isLocating} className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center disabled:bg-blue-300 mb-4">
                             {isLocating ? (
                                 <>
-                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
@@ -307,7 +336,7 @@ export const ValuationForm: React.FC<ValuationFormProps> = ({ onEvaluate, isLoad
                 {currentStep === 3 && (
                     <div className="fade-in-up">
                          <h2 className="text-xl font-bold text-primary-text mb-6 text-center">Características do imóvel</h2>
-                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
                             <div>
                                 <label htmlFor="area" className="block text-sm font-medium text-secondary-text mb-1">Área (m²)</label>
                                 <input type="number" id="area" name="area" value={formData.area} onChange={handleChange} className={`w-full p-2 border rounded-md ${errors.area ? 'border-red-500' : 'border-medium-border'}`} placeholder="Área construída ou terreno" />
@@ -342,6 +371,29 @@ export const ValuationForm: React.FC<ValuationFormProps> = ({ onEvaluate, isLoad
                                 </select>
                             </div>
                          </div>
+                        <div className="border-t border-medium-border pt-6 mt-6">
+                            <h3 className="text-lg font-semibold text-primary-text mb-4 text-center">Outras Características</h3>
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {availableFeatures.map(feature => {
+                                    const isSelected = formData.features.includes(feature);
+                                    return (
+                                        <button
+                                            key={feature}
+                                            type="button"
+                                            onClick={() => handleFeatureToggle(feature)}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border cursor-pointer transition-all duration-200 ${
+                                                isSelected
+                                                    ? 'bg-green-600 text-white border-green-600 shadow-md'
+                                                    : 'bg-slate-100 text-secondary-text border-slate-200 hover:bg-slate-200 hover:border-slate-300'
+                                            }`}
+                                        >
+                                            {isSelected ? <Icon path={ICONS.check} className="w-4 h-4" /> : <Icon path={ICONS.close} className="w-4 h-4" />}
+                                            {feature}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

@@ -8,6 +8,7 @@ export interface ValuationFormData {
     parkingSpaces: number;
     address: string;
     conservationState: 'bom' | 'regular' | 'ruim';
+    features: string[];
 }
 
 export interface ValuationResult {

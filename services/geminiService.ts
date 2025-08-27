@@ -35,7 +35,7 @@ const valuationSchema = {
 };
 
 export const getValuation = async (formData: ValuationFormData): Promise<ValuationResult> => {
-    const { propertyType, area, bedrooms, suites, bathrooms, parkingSpaces, address, conservationState } = formData;
+    const { propertyType, area, bedrooms, suites, bathrooms, parkingSpaces, address, conservationState, features } = formData;
 
     const prompt = `
         Realize uma avaliação imobiliária profissional para a seguinte propriedade no Brasil:
@@ -47,8 +47,10 @@ export const getValuation = async (formData: ValuationFormData): Promise<Valuati
         - Vagas de Garagem: ${parkingSpaces}
         - Estado de Conservação: ${conservationState}
         - Endereço (referência): ${address}
+        - Outras Características: ${features.length > 0 ? features.join(', ') : 'Nenhuma informada'}
 
         Baseie sua análise em dados de mercado simulados, considerando localização, características do imóvel e tendências atuais. 
+        Leve em consideração as 'Outras Características' para ajustar o valor final. Por exemplo, uma piscina ou varanda gourmet deve valorizar o imóvel.
         Forneça os resultados estritamente no formato JSON solicitado.
     `;
 
