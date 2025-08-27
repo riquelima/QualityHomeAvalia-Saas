@@ -7,10 +7,10 @@ import type { ValuationFormData, ValuationResult } from './types';
 import { getValuation } from './services/geminiService';
 
 const CallToActionBanner: React.FC = () => (
-    <div className="bg-primary-red text-white py-12">
+    <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-6 text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Averigue o preço por metro quadrado, valor de venda e aluguel do seu imóvel junto com os argumentos que o suportam.</h2>
-            <button className="bg-white text-primary-red font-bold py-3 px-8 rounded-md hover:bg-gray-200 transition-colors">
+            <button className="bg-cta text-primary-text font-bold py-3 px-8 rounded-md hover:bg-amber-600 transition-colors">
                 VER RELATÓRIO DE AMOSTRA
             </button>
         </div>
@@ -60,7 +60,7 @@ const App: React.FC = () => {
                         <p className="text-secondary-text">{error}</p>
                         <button
                             onClick={closeResultModal}
-                            className="mt-6 w-full bg-primary-red hover:bg-primary-red-hover text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                            className="mt-6 w-full bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                         >
                             Fechar
                         </button>

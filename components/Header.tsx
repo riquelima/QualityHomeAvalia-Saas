@@ -15,9 +15,9 @@ export const Header: React.FC = () => {
                         </a>
                     </div>
                     <nav className="hidden md:flex items-center space-x-8">
-                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary-red transition-colors">CONSULTAS</a>
-                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary-red transition-colors">PREÇOS</a>
-                        <a href="#" className="text-sm font-semibold text-primary-text hover:text-primary-red transition-colors">INICIAR SESSÃO</a>
+                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">CONSULTAS</a>
+                        <a href="#" className="text-sm font-semibold text-secondary-text hover:text-primary transition-colors">PREÇOS</a>
+                        <a href="#" className="text-sm font-semibold text-primary-text hover:text-primary transition-colors">INICIAR SESSÃO</a>
                     </nav>
                 </div>
             </div>

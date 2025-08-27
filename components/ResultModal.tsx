@@ -34,7 +34,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
         const doc = new jsPDF();
 
         // --- PDF Content ---
-        const primaryColor = '#DC2626'; // Red color
+        const primaryColor = '#1E40AF'; // Blue color
         const textColor = '#1E293B';
         const secondaryTextColor = '#64748B';
         let y = 20;
@@ -48,7 +48,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(secondaryTextColor);
-        doc.text('Gerado por RED ATLAS VALUATIONS', 105, y, { align: 'center' });
+        doc.text('Gerado por Quality Home Avalia', 105, y, { align: 'center' });
 
         // Line separator
         y += 10;
@@ -119,7 +119,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
                 <div className="p-8">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-primary-red">Resultado da Avaliação</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold text-primary">Resultado da Avaliação</h2>
                             <p className="text-secondary-text mt-1">Baseado em nossa análise de mercado por IA.</p>
                         </div>
                         <button onClick={onClose} className="text-secondary-text hover:text-primary-text">
@@ -127,9 +127,9 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
                         </button>
                     </div>
 
-                    <div className="mt-8 text-center bg-red-50 p-6 rounded-lg">
+                    <div className="mt-8 text-center bg-blue-50 p-6 rounded-lg">
                         <p className="text-lg text-secondary-text">Valor Estimado do Imóvel</p>
-                        <p className="text-4xl md:text-5xl font-bold text-primary-red my-2">
+                        <p className="text-4xl md:text-5xl font-bold text-primary my-2">
                             {formatCurrency(result.estimatedValue)}
                         </p>
                     </div>
@@ -156,7 +156,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
                 <div className="bg-slate-50 p-6 flex flex-col sm:flex-row gap-4 justify-end">
                     <button 
                         onClick={handleDownloadPdf}
-                        className="px-6 py-2 bg-primary-red hover:bg-primary-red-hover text-white font-semibold rounded-lg shadow-md transition-colors flex items-center justify-center gap-2"
+                        className="px-6 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-md transition-colors flex items-center justify-center gap-2"
                     >
                         <Icon path={ICONS.download} className="w-5 h-5" />
                         Baixar PDF
