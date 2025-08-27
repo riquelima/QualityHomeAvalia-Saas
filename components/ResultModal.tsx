@@ -113,18 +113,21 @@ export const ResultModal: React.FC<ResultModalProps> = ({ result, onClose }) => 
             onClick={onClose}
         >
             <div 
-                className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden fade-in-up"
+                className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden fade-in-up relative"
                 onClick={e => e.stopPropagation()}
             >
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-4 left-4 text-secondary-text hover:text-primary-text rounded-full hover:bg-slate-100 p-1 transition-colors z-10"
+                    aria-label="Fechar modal"
+                >
+                    <Icon path={ICONS.close} className="w-6 h-6" />
+                </button>
+
                 <div className="p-8">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-primary">Resultado da Avaliação</h2>
-                            <p className="text-secondary-text mt-1">Baseado em nossa análise de mercado por IA.</p>
-                        </div>
-                        <button onClick={onClose} className="text-secondary-text hover:text-primary-text">
-                            <Icon path={ICONS.close} className="w-6 h-6" />
-                        </button>
+                    <div className="text-center">
+                        <h2 className="text-2xl md:text-3xl font-bold text-primary">Resultado da Avaliação</h2>
+                        <p className="text-secondary-text mt-1">Baseado em nossa análise de mercado por IA.</p>
                     </div>
 
                     <div className="mt-8 text-center bg-blue-50 p-6 rounded-lg">
