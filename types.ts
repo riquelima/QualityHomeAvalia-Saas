@@ -16,3 +16,9 @@ export interface ValuationResult {
     valuePerSqM: number;
     confidenceScore: number;
 }
+
+export interface User {
+    name: string;
+    email: string;
+    picture: string;
+}

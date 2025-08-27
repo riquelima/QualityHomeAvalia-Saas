@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { ValuationForm } from './components/ValuationForm';
 import { ResultModal } from './components/ResultModal';
-import type { ValuationFormData, ValuationResult } from './types';
+import { AuthModal } from './components/AuthModal';
+import type { ValuationFormData, ValuationResult, User } from './types';
 import { getValuation } from './services/geminiService';
 
 const CallToActionBanner: React.FC = () => (
@@ -23,7 +24,25 @@ const App: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [valuationResult, setValuationResult] = useState<ValuationResult | null>(null);
 
+    const [user, setUser] = useState<User | null>(null);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [pendingFormData, setPendingFormData] = useState<ValuationFormData | null>(null);
+
+    useEffect(() => {
+        if (user && pendingFormData) {
+            handleFormSubmit(pendingFormData);
+            setPendingFormData(null); 
+        }
+    }, [user, pendingFormData]);
+
+
     const handleFormSubmit = async (formData: ValuationFormData) => {
+        if (!user) {
+            setPendingFormData(formData);
+            setShowAuthModal(true);
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setValuationResult(null);
@@ -43,9 +62,26 @@ const App: React.FC = () => {
         setError(null);
     }
 
+    const handleLoginSuccess = (loggedInUser: User) => {
+        setUser(loggedInUser);
+        setShowAuthModal(false);
+    };
+
+    const handleLogout = () => {
+        setUser(null);
+        if (window.google) {
+            window.google.accounts.id.disableAutoSelect();
+        }
+    };
+
+
     return (
         <div className="min-h-screen bg-white text-primary-text flex flex-col">
-            <Header />
+            <Header 
+                user={user}
+                onLoginClick={() => setShowAuthModal(true)}
+                onLogoutClick={handleLogout}
+            />
             <main className="flex-grow">
                 <div className="container mx-auto px-6 py-8 md:py-16">
                     <ValuationForm onEvaluate={handleFormSubmit} isLoading={isLoading} />
@@ -53,6 +89,7 @@ const App: React.FC = () => {
             </main>
             <CallToActionBanner />
             {valuationResult && <ResultModal result={valuationResult} onClose={closeResultModal} />}
+            {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} onLoginSuccess={handleLoginSuccess} />}
             {error && !isLoading && (
                  <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50" onClick={closeResultModal}>
                     <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full text-center fade-in-up" onClick={e => e.stopPropagation()}>
