@@ -29,15 +29,15 @@ const ReportCard: React.FC<{ report: Report; onViewReport: (report: Report) => v
                 <p className="font-semibold text-primary-text">{report.date}</p>
             </div>
             <div className="mb-6">
-                <p className="text-sm text-secondary-text">Valor Estimado</p>
-                <p className="text-2xl font-bold text-primary">{formatCurrency(report.result.estimatedValue)}</p>
+                <p className="text-sm text-secondary-text">Valor de Venda Estimado</p>
+                <p className="text-2xl font-bold text-primary">{formatCurrency(report.result.salePrice.estimated)}</p>
             </div>
         </div>
         <button
             onClick={() => onViewReport(report)}
             className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-md transition-colors"
         >
-            Ver Detalhes
+            Ver Relatório Completo
         </button>
     </div>
 );
@@ -48,7 +48,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ reports, onViewReport,
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-primary-text">Meus Relatórios de Avaliação</h1>
                 <button onClick={onBack} className="px-4 py-2 text-sm font-semibold text-secondary-text hover:text-primary transition-colors">
-                    &larr; Voltar
+                    &larr; Voltar para o início
                 </button>
             </div>
 
