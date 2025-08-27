@@ -1,11 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ValuationFormData, ValuationResult } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set.");
-}
+// ATENÇÃO: A chave de API foi inserida diretamente no código, conforme solicitado.
+const apiKey = "AIzaSyCsX9l10XCu3TtSCU1BSx-qOYrwUKYw2xk";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: apiKey });
 
 const valuationSchema = {
     type: Type.OBJECT,
