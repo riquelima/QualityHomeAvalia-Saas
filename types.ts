@@ -22,3 +22,10 @@ export interface User {
     email: string;
     picture: string;
 }
+
+export interface Report {
+    id: string;
+    date: string;
+    formData: ValuationFormData;
+    result: ValuationResult;
+}

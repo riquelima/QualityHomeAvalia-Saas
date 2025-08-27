@@ -4,7 +4,8 @@ import { Header } from './components/Header';
 import { ValuationForm } from './components/ValuationForm';
 import { ResultModal } from './components/ResultModal';
 import { AuthModal } from './components/AuthModal';
-import type { ValuationFormData, ValuationResult, User } from './types';
+import { ReportsPage } from './components/ReportsPage';
+import type { ValuationFormData, ValuationResult, User, Report } from './types';
 import { getValuation } from './services/geminiService';
 
 const CallToActionBanner: React.FC = () => (
@@ -18,23 +19,40 @@ const CallToActionBanner: React.FC = () => (
     </div>
 );
 
-
 const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [valuationResult, setValuationResult] = useState<ValuationResult | null>(null);
-
+    const [selectedReport, setSelectedReport] = useState<Report | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [pendingFormData, setPendingFormData] = useState<ValuationFormData | null>(null);
+    const [reports, setReports] = useState<Report[]>([]);
+    const [currentPage, setCurrentPage] = useState<'home' | 'reports'>('home');
 
+    // Load reports from localStorage on user login
+    useEffect(() => {
+        if (user) {
+            try {
+                const storedReports = localStorage.getItem(`reports_${user.email}`);
+                if (storedReports) {
+                    setReports(JSON.parse(storedReports));
+                }
+            } catch (e) {
+                console.error("Failed to load reports from localStorage", e);
+                setReports([]);
+            }
+        } else {
+            setReports([]);
+        }
+    }, [user]);
+
+    // Re-run evaluation if it was pending login
     useEffect(() => {
         if (user && pendingFormData) {
             handleFormSubmit(pendingFormData);
             setPendingFormData(null); 
         }
     }, [user, pendingFormData]);
-
 
     const handleFormSubmit = async (formData: ValuationFormData) => {
         if (!user) {
@@ -45,10 +63,29 @@ const App: React.FC = () => {
 
         setIsLoading(true);
         setError(null);
-        setValuationResult(null);
+        setSelectedReport(null);
         try {
             const result = await getValuation(formData);
-            setValuationResult(result);
+            const newReport: Report = {
+                id: new Date().toISOString(),
+                date: new Date().toLocaleDateString('pt-BR'),
+                formData,
+                result,
+            };
+            
+            // Update state and save to localStorage
+            setReports(prevReports => {
+                const updatedReports = [newReport, ...prevReports];
+                try {
+                     localStorage.setItem(`reports_${user.email}`, JSON.stringify(updatedReports));
+                } catch(e) {
+                    console.error("Failed to save report to localStorage", e);
+                }
+                return updatedReports;
+            });
+
+            setSelectedReport(newReport);
+
         } catch (e) {
             console.error(e);
             setError('Falha ao avaliar o imóvel. Por favor, tente novamente.');
@@ -57,8 +94,8 @@ const App: React.FC = () => {
         }
     };
     
-    const closeResultModal = () => {
-        setValuationResult(null);
+    const closeModal = () => {
+        setSelectedReport(null);
         setError(null);
     }
 
@@ -69,11 +106,15 @@ const App: React.FC = () => {
 
     const handleLogout = () => {
         setUser(null);
+        setCurrentPage('home');
         if (window.google) {
             window.google.accounts.id.disableAutoSelect();
         }
     };
-
+    
+    const handleViewReport = (report: Report) => {
+        setSelectedReport(report);
+    }
 
     return (
         <div className="min-h-screen bg-white text-primary-text flex flex-col">
@@ -81,22 +122,33 @@ const App: React.FC = () => {
                 user={user}
                 onLoginClick={() => setShowAuthModal(true)}
                 onLogoutClick={handleLogout}
+                onReportsClick={() => setCurrentPage('reports')}
             />
             <main className="flex-grow">
-                <div className="container mx-auto px-6 py-8 md:py-16">
-                    <ValuationForm onEvaluate={handleFormSubmit} isLoading={isLoading} />
-                </div>
+                {currentPage === 'home' ? (
+                    <div className="container mx-auto px-6 py-8 md:py-16">
+                        <ValuationForm onEvaluate={handleFormSubmit} isLoading={isLoading} />
+                    </div>
+                ) : (
+                    <ReportsPage 
+                        reports={reports} 
+                        onViewReport={handleViewReport}
+                        onBack={() => setCurrentPage('home')}
+                        onCreateNew={() => setCurrentPage('home')}
+                    />
+                )}
             </main>
-            <CallToActionBanner />
-            {valuationResult && <ResultModal result={valuationResult} onClose={closeResultModal} />}
+            {currentPage === 'home' && <CallToActionBanner />}
+
+            {selectedReport && <ResultModal result={selectedReport.result} onClose={closeModal} />}
             {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} onLoginSuccess={handleLoginSuccess} />}
             {error && !isLoading && (
-                 <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50" onClick={closeResultModal}>
+                 <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50" onClick={closeModal}>
                     <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full text-center fade-in-up" onClick={e => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold text-warning mb-4">Ocorreu um Erro</h2>
                         <p className="text-secondary-text">{error}</p>
                         <button
-                            onClick={closeResultModal}
+                            onClick={closeModal}
                             className="mt-6 w-full bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-lg transition-colors"
                         >
                             Fechar
